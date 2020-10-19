@@ -1,33 +1,6 @@
-<<<<<<< HEAD
-/*-------------------------------HANGMAN v1.0---------------------------------
-Hangman is a popular game where one player writes the name of a movie, with
-all the consonants hidden and only vowels and numbers visible. The other
-player has to guess the movie name letter by letter. If (s)he guesses a
-correct letter, the first player has to fill the appropriate blank spaces with
-that letter, else the first letter of the word 'HANGMAN', i.e. H, is written
-down. The game continues in a similar fashion. If all the blank spaces are
-filled, i.e. the movie name has been guessed correctly, before all the letters
-of HANGMAN are written down, then the guessing player wins, otherwise the
-player who gave the movie wins.
-
-We have implemented the basics of the game in this program, along with a
-rudimentary score-keeping system and a login system. We have used text files to
-store scores, but login IDs and passwords are in binary files, as a substitute
-for encoding them. As for the version written above, each compilation of the
-program corresponds to a 0.1 increase, and each major overhaul, or addition of
-new features, or a full 'plugs out' test, corresponds to an increase of 1, so
-you can guess our hard work by looking at the version number :)
-Enjoy the game!
-----------------------------------------------------------------------------*/
-
-//Header files:
-#include<fstream.h>
-#include<process.h>
-=======
 #include<fstream>
 #include<iostream>
 #include<string.h>
->>>>>>> 23ea19d396e961d85197ff20f19962fdfb25ac81
 #include<stdio.h>
 #include<conio.h>
 #include<stdlib.h>
