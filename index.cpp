@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*-------------------------------HANGMAN v1.0---------------------------------
 Hangman is a popular game where one player writes the name of a movie, with
 all the consonants hidden and only vowels and numbers visible. The other
@@ -22,6 +23,11 @@ Enjoy the game!
 //Header files:
 #include<fstream.h>
 #include<process.h>
+=======
+#include<fstream>
+#include<iostream>
+#include<string.h>
+>>>>>>> 23ea19d396e961d85197ff20f19962fdfb25ac81
 #include<stdio.h>
 #include<conio.h>
 #include<stdlib.h>
