@@ -1,486 +1,376 @@
-#include<fstream>
-#include<iostream>
-#include<string.h>
-#include<stdio.h>
+#include<fstream.h>
 #include<conio.h>
-#include<stdlib.h>
 #include<string.h>
 #include<ctype.h>
+#include<stdio.h>
+#include<stdlib.h>
 
-//A class to create players of the game
-class PLAYER
+class USER
 {
-	char login[20], name[20], password[20];
-	int wins, losses;
+	char username[20], password[20];
+	float win, loss;
 	public:
-	PLAYER(){}
-	PLAYER(char l[20], char n[20], char p[20])
+	USER()	{	win = 0;	loss = 0; 	}
+	char* retname()	{	return username;	}
+	char* retpassword()	{	return password;	}
+	void copy(USER person)
 	{
-		strcpy(login, l);
-		strcpy(name, n);
-		strcpy(password, p);
+		strcpy(username, person.retname());
+		strcpy(password, person.retpassword());
+		win = person.retwin();
+		loss = person.retloss();
 	}
-	void add_User();
-	void disp_User()
+	float retwin()	{	return win;	}
+	float retloss()	{	return loss;	}
+	void winmore()	{	win++;	}
+	void lossmore()	{	loss++;	}
+	void take();
+	void show()
 	{
-		cout<<"\nName: "<<name;
-		cout<<"\nLogin id: "<<login;
+		cout<<"\nUsername: "<<username;
+		cout<<"\nWins: "<<win;
+		cout<<"\nLosses: "<<loss;
+		if(loss != 0)
+			cout<<"\nW/L ratio: "<<win/loss;
 	}
-	char* ret_name()	{	return name;	}
-	char* ret_login()	{	return login;	}
-	char* ret_password()	{	return password;	}
-	int ret_win()
-	{
-		return wins;
-	}
-	int ret_loss()
-	{
-		return losses;
-	}
-	void winmore();
-	void losemore();
-};
-void PLAYER::winmore()
-{
-	ifstream fin("users.dat", ios::binary);
-	ofstream fout("temp.dat", ios::binary);
-	PLAYER user;
-	wins++;
-	while(!fin.eof())
-	{
-		fin.read((char*)&user, sizeof(user));
-		if(fin.eof())
-			break;
-		if(strcmp(user.ret_login(), login) == 0)
-			fout.write((char*)this, sizeof(this));
-		else
-			fout.write((char*)&user, sizeof(user));
-	}
-	fin.close();
-	fout.close();
-	remove("users.dat");
-	rename("temp.dat", "users.dat");
-}
-void PLAYER::losemore()
-{
-	ifstream fin("users.dat", ios::binary);
-	ofstream fout("temp.dat", ios::binary);
-	PLAYER user;
-	losses++;
-	while(!fin.eof())
-	{
-		fin.read((char*)&user, sizeof(user));
-		if(fin.eof())
-			break;
-		if(strcmp(user.ret_login(), login) == 0)
-			fout.write((char*)this, sizeof(this));
-		else
-			fout.write((char*)&user, sizeof(user));
-	}
-	fin.close();
-	fout.close();
-	remove("users.dat");
-	rename("temp.dat", "users.dat");
-}
-
-void PLAYER::add_User()
-{
-	cout<<"\nHello new user!";
-	do
-	{
-		cout<<"\nEnter your name: ";
-		gets(name);
-		if(strcmp(name, "administrator") == 0)
-			cout<<"Name not allowed!";
-	}while(strcmp(name, "administrator") == 0);
-	do
-	{
-		cout<<"\nEnter your login ID: ";
-		gets(login);
-		if(strcmp(login, "00000") == 0)
-			cout<<"Login id not allowed!";
-	}while(strcmp(login, "00000") == 0);
-	do
-	{
-		cout<<"\nEnter your password: ";
-		gets(password);
-		if(strcmp(password, "admin") == 0)
-			cout<<"Password not allowed!";
-	}while(strcmp(password, "admin") == 0);
-}
-//A class to create and store a movie name, and encode it, along with some
-//basic functions required to properly implement the game
-class MOVIE
-{
-	char name[20], check_Name[20], code_Name[20];
-	int count;
-	char hangman[8];
-	public:
-	MOVIE()
-	{	strcpy(hangman, "HANGMAN");
-		count = 0;
-	}
-	void encode();
-	void add_Movie(char*);
-	void check_Letter(char);
-	int check_Win();
-	void disp_Hangman();
-	char* ret_codename()	{	return code_Name;	}
-	int ret_count()	{	return count;	}
 };
 
-void MOVIE::encode()
+void USER::take()
 {
-	int i = 0, j = 0;
-	while(name[i] != '\0')
+	cout<<"\nEnter username: ";	gets(username);
+	cout<<"\nEnter password: ";
+	char ch;	int i = 0;
+	while(1)
 	{
-		if(isalpha(name[i]))
+		ch = getch();
+		if(ch == '\r')
 		{
-			if(isupper(name[i]))
-				check_Name[i] = tolower(name[i]);
+			password[i] = '\0';
+			break;
 		}
-		i++;
+		password[i++] = ch;
+		cout<<"*";
 	}
-	while(check_Name[j] != '\0')
-	{
-		if(isalpha(check_Name[j]))
+}
+
+void adduser();
+int login(USER &);
+void normie(USER &);
+void singleplayer(USER &);
+void admin_mode();
+//void multiplayer(USER &, USER &);
+
+void main()
+{
+	char cont;	int choice; 	USER obj;
+	do{
+		clrscr();
+		cout<<"\n\t\t\tWelcome to HANGMAN v1.0!\n";
+		cout<<"------------------------------------------------------------------------------";
+		cout<<"\nMenu:\n1.Login\n2.Sign up\n3.Play game\n0.Exit";
+		cout<<"\nEnter your choice: ";
+		cin>>choice;
+		switch(choice)
 		{
-			if(check_Name[j] == 'a' ||
-			   check_Name[j] == 'e' ||
-			   check_Name[j] == 'i' ||
-			   check_Name[j] == 'o' ||
-			   check_Name[j] == 'u')
-				code_Name[j] = check_Name[j];
-			else
-				code_Name[j] = '_';
-		}
-		else
-			code_Name[j] = '_';
-		j++;
-	}
-}
-
-void MOVIE::add_Movie(char moviename[20])
-{
-	strcpy(name, moviename);
-	encode();
-}
-
-void MOVIE::check_Letter(char l)
-{
-	int i = 0;
-	while(check_Name[i] != '\0')
-	{
-		if(check_Name[i] == l)
-			code_Name[i] = l;
-		else
-			count++;
-		i++;
-	}
-}
-
-int MOVIE::check_Win()
-{
-	int i = 0;
-	while(code_Name[i] != '\0')
-	{
-		if(code_Name[i] == '_')
-		{
-			count++;
-			return 0;
-		}
-	}
-	return 1;
-}
-
-void MOVIE::disp_Hangman()
-{
-	for(int i = 0; i <= count; i++)
-		cout<<hangman[i];
-}
-
-void new_user(PLAYER p)
-{
-	clrscr();
-	fstream fio;
-	fio.open("USERS.dat", ios::out|ios::in|ios::binary|ios::app);
-	PLAYER obj;
-	while(!fio.eof())
-	{
-		fio.read((char*)&obj, sizeof(obj));
-		if(strcmp(p.ret_name(), obj.ret_name()) == 0 ||
-		   strcmp(obj.ret_login(), p.ret_login()) == 0)
-		{
-			cout<<"\nUser already exists!";
-			fio.close();
-			return;
-		}
-	}
-	fio.write((char*)&p, sizeof(PLAYER));
-	cout<<"\nUser successfully added!";
-	fio.close();
-}
-
-int check_login(char id[20], char name[20], char password[20])
-{
-	PLAYER obj;
-	int flag=0;
-	ifstream fin("USERS.dat", ios::binary);
-	while(!fin.eof())
-	{
-		fin.read((char*)&obj ,sizeof(PLAYER));
-		if(strcmp(id, obj.ret_login())==0)
-		{
-			if(strcmp(name, obj.ret_name())==0)
-			{
-				if(strcmp(password, obj.ret_password())==0)
+			case 0:
+				exit(0);
+				break;
+			case 1:	clrscr();
+				cout<<"Enter your credentials";
+				obj.take();
+				if(strcmp(obj.retname(), "admin") == 0)
 				{
-					flag=1;
-					break;
+					if(strcmp(obj.retpassword(), "00000") == 0)
+					{
+						admin_mode();
+						break;
+					}
 				}
+				else
+					normie(obj);
+				break;
+			case 2:	clrscr();
+				adduser();
+				break;
+			case 3:	clrscr();
+				int choice2;
+				cout<<"\n1.Play as a user\n2.Play as guest\n0.Return to main menu";
+				cout<<"\nEnter your choice: ";
+				cin>>choice2;
+				switch(choice2)
+				{
+					case 0:	break;
+					case 1: cout<<"\nEnter your credentials";
+						obj.take();
+						if(strcmp(obj.retname(), "admin") == 0)
+						{
+							if(strcmp(obj.retpassword(), "00000") == 0)
+							{
+								admin_mode();
+								break;
+							}
+						}
+						else
+							normie(obj);
+						break;
+					case 2:	cout<<"\nEnter your username as 'guest', and password as 'nobody'";
+						obj.take();
+						if(strcmp(obj.retname(), "guest") == 0)
+						{
+							if(strcmp(obj.retpassword(), "nobody") == 0)
+							{
+								normie(obj);
+								break;
+							}
+						}
+						cout<<"\nYou have entered the username or password incorrectly!";
+						break;
+					default:cout<<"\nError!";
+				}
+				break;
+			default:cout<<"\nWrong input!";
+		}
+		cout<<"\nDo you want to display the main menu again? (Y/N) ";
+		cin>>cont;
+	}while(cont == 'y' || cont == 'Y');
+}
+
+void adduser()
+{
+	USER player;
+	cout<<"\nSign up";
+	player.take();
+	ofstream fout("USERS.DAT", ios::binary|ios::app);
+	fout.write((char*)&player, sizeof(player));
+	cout<<"\nSign up successful!";
+	fout.close();
+}
+
+int login(USER &attempt)
+{
+	USER obj;
+	ifstream fin("USERS.DAT", ios::binary);
+	while(!fin.eof())
+	{
+		fin.read((char*)&obj, sizeof(obj));
+		if(strcmp(obj.retname(), attempt.retname()) == 0)
+		{
+			if(strcmp(obj.retpassword(), attempt.retpassword()) == 0)
+			{
+				attempt.copy(obj);
+				fin.close();
+				return 1;
+			}
+			else
+			{
+				cout<<"\nIncorrect password!";
+				return 0;
 			}
 		}
 	}
+	cout<<"\nIncorrect username!";
 	fin.close();
-	return flag;
+	return 0;
 }
 
-void view_score(char id[20])
+void normie(USER &player)
 {
-	PLAYER obj;
-	ifstream fin("USER.txt",ios::in);
-	while(!fin.eof())
+	int check;
+	check = login(player);
+	if(check == 1)
 	{
-		fin.read((char*)&obj,sizeof(PLAYER));
-		if(strcmp(obj.ret_login(),id)==0)
-		{
-			cout<<"\nSCORE:";
-			cout<<"\nWINS: "<<obj.ret_win();
-			cout<<"\nLOSSES: "<<obj.ret_loss();
-		}
+		int choice;	char cont;
+		do{
+			clrscr();
+			cout<<"\nWelcome "<<player.retname()<<"!";
+			cout<<"\nSelect your action:";
+			cout<<"\n1.Play singleplayer\n2.Add another user\n3.Display scoreboard\n0.Logout";
+			cout<<"\nEnter your choice: ";
+			cin>>choice;
+			switch(choice)
+			{
+				case 0:	break;
+				case 1:	singleplayer(player);
+					break;
+				/*case 2:	clrscr();
+					cout<<"\nPlayer 2 login";
+					USER player2;
+					player2.take();
+					check = login(player2);
+					if(check == 0)
+					{
+						cout<<"\nAborting!";
+						break;
+					}
+					//multiplayer(player, player2);
+					break;*/
+				case 2:	adduser();
+					break;
+				case 3:	clrscr();
+					player.show();
+					break;
+				default:"Error!";
+			}
+			cout<<"\nLogout? (Y/N) ";
+			cin>>cont;
+		}while(cont == 'n' || cont == 'N');
 	}
+}
+
+int vowel_check(char a)
+{
+	if(a == 'A' || a == 'a' ||
+	   a == 'E' || a == 'e' ||
+	   a == 'I' || a == 'i' ||
+	   a == 'O' || a == 'o' ||
+	   a == 'U' || a == 'u')
+		return 1;
+	else
+		return 0;
 }
 
 void admin_mode()
 {
-	clrscr();	char cont;
-	cout<<"\nWelcome Administrator!";
+	char cont;	int choice;
 	do{
-		cout<<"\nSelect your action:";
-		cout<<"\n1.View all users\n2.Edit pre-loaded movies\n3.Add more movies\n4.Delete an existing movie\n0.Logout";
-		cout<<"\nEnter your choice (0-2): ";
-		int choice;
+		clrscr();
+		cout<<"\nWelcome administrator!";
+		cout<<"\n1.Display movie list\n2.Add a movie\n3.Delete a movie\n0.Logout";
+		cout<<"\nEnter choice: ";
 		cin>>choice;
 		switch(choice)
 		{
-			case 0:	return;
+			case 0:	break;
 			case 1:	clrscr();
-				ifstream fin("Users.dat", ios::binary);
-				PLAYER obj;
-				while(!fin.eof())
+				char movie[80];
+				ifstream fin("movies.txt");
+				for(int i = 0; !fin.eof(); i++)
 				{
-					fin.read((char*)&obj, sizeof(obj));
+					fin.getline(movie, 80);
 					if(fin.eof())
 						break;
-					obj.disp_User();
-					cout<<"\nPassword: "<<obj.ret_password();
-					cout<<"\n---------------------------";
+					cout<<i+1<<". "<<movie<<endl;
 				}
-				fin.close();
 				break;
 			case 2:	clrscr();
-				char line[80];	int counter = 0, choice;
-				ifstream fi("movies.txt");
-				ofstream fo("temp.txt");
-				while(!fi.eof())
+				char line[80];
+				ofstream fout("movies.txt", ios::app);
+				cout<<"\nEnter the name of the new movie: ";
+				gets(line);
+				fout<<line<<endl;
+				cout<<"\nMovie added!";
+				break;
+			case 3:	clrscr();
+				char del[80], name[80];
+				ifstream f1("movies.txt");
+				ofstream f2("temp.txt");
+				cout<<"\nEnter name of the movie to be deleted: ";
+				gets(del);
+				while(!f1.eof())
 				{
-					fi.getline(line, 80);
-					if(fi.eof())
+					f1.getline(name, 80);
+					if(f1.eof())
 						break;
-					cout<<counter + 1<<". "<<line<<endl;
-					counter++;
+					if(strcmpi(name, del) != 0)
+						f2<<name<<endl;
 				}
-				cout<<"\nEnter which movie to edit: ";
-				cin>>choice;
-				counter = 0;
-				fin.seekg(0);
-				while(!fi.eof())
-				{
-					fi.getline(line, 80);
-					if(counter+1 == choice)
-					{
-						cout<<"\nEnter new movie name: ";
-						gets(line);
-						fo<<line<<endl;
-						cout<<"\nUpdated!";
-						break;
-					}
-					else
-						fo<<line<<endl;
-					counter++;
-				}
-				fi.close();
-				fo.close();
+				f1.close();
+				f2.close();
 				remove("movies.txt");
 				rename("temp.txt", "movies.txt");
 				break;
-			case 3:	char movie[20];
-				cout<<"\nEnter movie name: ";
-				gets(movie);
-				ofstream f("movies.txt", ios::app);
-				f<<endl<<movie;
-				cout<<"\nMovie successfully added!";
-				f.close();
-				break;
-			case 4: clrscr();
-				char l[80];	int co = 0, ch;
-				ifstream finn("movies.txt");
-				ofstream foutt("temp.txt");
-				while(!finn.eof())
-				{
-					finn.getline(l, 80);
-					if(finn.eof())
-						break;
-					cout<<counter + 1<<". "<<l<<endl;
-					counter++;
-				}
-				cout<<"\nEnter which movie to delete: ";
-				cin>>ch;
-				co = 0;
-				finn.seekg(0);
-				while(!finn.eof())
-				{
-					finn.getline(l, 80);
-					if(co+1 != choice)
-						foutt<<l<<endl;
-					co++;
-				}
-				finn.close();
-				foutt.close();
-				remove("movies.txt");
-				rename("temp.txt", "movies.txt");
-				break;
-			default:cout<<"\nError!";
+			default:cout<<"\nError!!!";
 		}
-		cout<<"\nDo you want to logout? (Y/N): ";
+		cout<<"\nDo you want to logout? (Y/N) ";
 		cin>>cont;
-	}while(cont == 'y' || cont == 'Y');
+	}while(cont == 'n' || cont == 'N');
 }
 
-void human_vs_comp(char id[20], char name[20], char password[20])
+void singleplayer(USER &obj)
 {
 	clrscr();
-	PLAYER user(id, name, password);
 	randomize();
-	char movie[20];	MOVIE obj;
 	ifstream fin("movies.txt");
-	int index, win = 0;
-	index = random(50);
-	for(int i = 0; i <= index; i++)
+	int i = 0;	char movie[80], encoded_movie[80];
+	while(!fin.eof())
 	{
-		fin.getline(movie, 20);
-		if(i == index)
-		{
-			obj.add_Movie(movie);
+		fin.getline(movie, 80);
+		if(fin.eof())
 			break;
-		}
+		i++;
 	}
 	fin.close();
-	char letter;
-	clrscr();
-	while(win != 1 && obj.ret_count() < 6)
+	int temp = i;
+	i = random(temp);
+	ifstream fi("movies.txt");
+	for(temp = 0; temp <= i; temp++)
+		fi.getline(movie, 80);
+	fi.close();
+	int c = 0;
+	for(int j = 0; j < strlen(movie); j++)
 	{
-		cout<<obj.ret_codename();
-		cout<<name<<", enter the letter you want to guess: ";
-		cin>>letter;
-		obj.check_Letter(letter);
-		win = obj.check_Win();
-		obj.disp_Hangman();
+		if(vowel_check(movie[j]) || !isalpha(movie[j]))
+			encoded_movie[c++] = movie[j];
+		else
+			encoded_movie[c++] = '_';
 	}
-	if(win == 1)
-	{
-		cout<<endl<<name<<" wins!!!";
-		user.winmore();
-	}
-	else
-	{
-		cout<<"\nComputer wins!!!";
-		user.losemore();
-	}
-}
-
-void main()
-{
-	clrscr();
-	int choice;
-	char id[20], name[20], password[20], cont, movie[20];
-	cout<<"HANGMAN v1.0";
-	cout<<"\nWelcome to Hangman, a movie name - guessing game in Turbo C++!";
+	encoded_movie[c] = '\0';
+	int life_left = 7;
+	int win = 0;
+	int flag_win_check = 1;
+	char user_guess;
+	int flag_life = 0;
 	do{
-		cout<<"\nSelect what you would like to do:";
-		cout<<"\n1.Login to account\n2.Add a new user ID\n3.Play the game\n0.Exit";
-		cout<<"\nEnter your choice: ";	cin>>choice;
-		switch(choice)
+		flag_win_check = 1;
+		flag_life = 0;
+		cout << "\nLIVES LEFT = " << life_left;
+		cout << "\n\nMovie: ";	puts(encoded_movie);
+		cout <<obj.retname()<< ", guess a character: ";
+		cin >> user_guess;
+		for (int k = 0; movie[k] != '\0'; k++)
 		{
-			case 0:	exit(0);
-			case 1:	clrscr();
-				cout<<"\nEnter user ID: ";
-				gets(id);
-				cout<<"\nEnter your name: ";
-				gets(name);
-				cout<<"\nEnter password: ";
-				gets(password);
-				if(strcmp(name, "administrator") == 0 &&
-				   strcmp(id, "00000") == 0 && strcmp(password, "admin") == 0)
-				{
-					admin_mode();
-					break;
-				}
-				int flag;
-				flag = check_login(id, name, password);
-				if(flag == 0)
-				{
-					cout<<"\nIncorrect credentials!";
-					break;
-				}
-				else
-				{
-					clrscr();
-					cout<<"\nWelcome "<<name<<"!";
-					cout<<"\nSelect which action to perform: ";
-					cout<<"\n1.View score record\n2.Play in Human v/s Computer mode\n3.Logout and return to main menu";
-					cout<<"\nEnter your choice: ";
-					int choice2;	char cont2;
-					cin>>choice2;
-					do{
-						switch(choice2)
-						{
-							case 1: cout<<"\nID: "<<id;
-								cout<<"\nName: "<<name;
-								view_score(id);
-								break;
-							case 2: clrscr();
-								human_vs_comp(id, name, password);
-								break;
-							case 3:	break;
-							default:cout<<"\nError!";
-						}
-						cout<<"\nAre you sure you want to logout and exit to main menu? (Y/N) ";
-						cin>>cont2;
-					}while(cont2 == 'y' || cont2 == 'Y');
-				}
-				break;
-			case 2:	clrscr();
-				PLAYER new_Player;
-				new_Player.add_User();
-				new_user(new_Player);
-				break;
-			default:clrscr();
-				cout<<"\nError!!!";
-				break;
+			if (user_guess == tolower(movie[k]))
+			{
+				encoded_movie[k] = movie[k];
+				flag_life = 1;
+			}
 		}
-		cout<<"\nDo you want to exit to main menu? (Y/N): ";
-		cin>>cont;
-	}while(cont == 'y' || cont == 'Y');
-	getch();
+		if (flag_life == 0)
+			life_left -= 1;
+		clrscr();
+		//win check from here
+		for (int l = 0; encoded_movie[l] != '\0'; l++)
+		{
+			if (encoded_movie[l] == '_')
+				flag_win_check = 0;
+		}
+		if (flag_win_check == 1)
+			win = 1;
+		if (win == 1)
+		{
+			cout << "You've won!!!";
+			obj.winmore();
+			break;
+		}
+	} while (life_left > 0);
+	if (life_left == 0)
+	{
+		cout << "You've lost!!!";
+		obj.lossmore();
+	}
+	ifstream f1("USERS.DAT", ios::binary);
+	ofstream f2("TEMP.DAT", ios::binary);
+	USER dummy;
+	while(!f1.eof())
+	{
+		f1.read((char*)&dummy, sizeof(dummy));
+		if(strcmp(obj.retname(), dummy.retname()) == 0)
+			f2.write((char*)&obj, sizeof(obj));
+		else
+			f2.write((char*)&dummy, sizeof(dummy));
+	}
+	f1.close();
+	f2.close();
+	remove("USERS.DAT");
+	rename("TEMP.DAT", "USERS.DAT");
 }
