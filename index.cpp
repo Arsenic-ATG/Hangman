@@ -1,3 +1,7 @@
+/*
+	List of all header files used
+	Lot of them are not user, just for redundancies sake
+*/
 #include<iostream>
 #include<fstream>
 #include<string>
@@ -6,11 +10,18 @@
 #include<stdlib.h>
 #include<ctype.h>
 #include<math.h>
-
+/*
+	Namespace std is added to save a lot of typing,
+	instead of typing all the time std::cout or std::cin
+*/
 using namespace std;
 
 void clrscr()
 {
+	/*
+		Custom clrscr() function, works as expected. 
+		No qualms at all, don't even touch it
+	*/
 	system("clear");
     for(int i=0;i<79;i++)
         cout<<"=";
@@ -19,6 +30,13 @@ void clrscr()
         cout<<"=";
     
 }
+
+/*
+	User class
+	helps in manipulation and usage of user data
+	the problem which i beleive we shall face, is that
+	modification of string data type is difficult
+*/
 class user
 {
 	string username, password;
@@ -73,6 +91,13 @@ public:
 		}
 	}
 };
+
+/*
+	Fuction which returns that
+	the user is logged in or not. 
+	Also, returns flag for the same. 
+	
+*/
 int login(user &attempt)
 {
 	user obj;
