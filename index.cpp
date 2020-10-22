@@ -1,9 +1,10 @@
-#include<fstream.h>
-#include<conio.h>
-#include<string.h>
+#include<fstream>
+#include<iostream>
+#include<string>
 #include<ctype.h>
 #include<stdio.h>
 #include<stdlib.h>
+#include<cstring>
 
 class USER
 {
@@ -358,19 +359,19 @@ void singleplayer(USER &obj)
 		cout << "You've lost!!!";
 		obj.lossmore();
 	}
-	ifstream f1("USERS.DAT", ios::binary);
-	ofstream f2("TEMP.DAT", ios::binary);
 	USER dummy;
-	while(!f1.eof())
+	ifstream finput("USERS.DAT", ios::binary);
+	ofstream foutput("TEMP.DAT", ios::binary);
+	while(!finput.eof())
 	{
-		f1.read((char*)&dummy, sizeof(dummy));
+		finput.read((char*)&dummy, sizeof(dummy));
 		if(strcmp(obj.retname(), dummy.retname()) == 0)
-			f2.write((char*)&obj, sizeof(obj));
+			foutput.write((char*)&obj, sizeof(obj));
 		else
-			f2.write((char*)&dummy, sizeof(dummy));
+			foutput.write((char*)&dummy, sizeof(dummy));
 	}
-	f1.close();
-	f2.close();
+	finput.close();
+	foutput.close();
 	remove("USERS.DAT");
 	rename("TEMP.DAT", "USERS.DAT");
 }
