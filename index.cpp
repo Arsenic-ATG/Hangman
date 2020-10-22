@@ -13,7 +13,7 @@ void clear()
 	/*
 		CUSTOM CLEARSCREEN FUNCTION TO DISPLAY TOP BANNER
 	*/
-	clrscr();
+	system("cls");
 	for (int i = 0; i < 80; i++)
 		cout << "=";
 	cout << "\t\t\t\tHANGMAN v3.14\n";
@@ -22,7 +22,7 @@ void clear()
 }
 class USER
 {
-	char username[20], password[20];
+	char* username, password;
 	float win, loss;
 	public:
 	USER()
@@ -65,7 +65,7 @@ void USER::take()
 	char ch;	int i = 0;
 	while (1)
 	{
-		ch = getch();
+		ch = cin.get();
 		if (ch == '\r')
 		{
 			password[i] = '\0';
@@ -225,31 +225,31 @@ void normie(USER & player)
 			cout << "\n1.Play singleplayer\n2.Play multiplayer\n3.Add another user\n4.Display scoreboard\n0.Logout";
 			cout << "\nEnter your choice: ";
 			cin >> choice;
-			switch (choice)
-			{
-				case 0:	break;
-				case 1:	singleplayer(player);
+			if(choice == 1)
+				singleplayer(player);
+			else if(choice == 2)	{
+				clear();
+				USER player2;
+				cout<<"\nAnother user is needed to play in multiplayer mode!";
+				cout<<"\nPlayer 2, enter your credentials below: (if you want to log in as guest, enter username as 'guest' and password as 'nobody')";
+				player2.take();
+				int flag = login(player2);
+				if(flag == 0)
+				{
+					cout<<"\nLogin failed!";
 					break;
-				case 2:	clear();
-					USER player2;
-					cout<<"\nAnother user is needed to play in multiplayer mode!";
-					cout<<"\nPlayer 2, enter your credentials below: (if you want to log in as guest, enter username as 'guest' and password as 'nobody')";
-					player2.take();
-					int flag = login(player2);
-					if(flag == 0)
-					{
-						cout<<"\nLogin failed!";
-						break;
-					}
-					multiplayer(player, player2);
-					break;
-				case 3:	adduser();
-					break;
-				case 4:	clear();
-					player.show();
-					break;
-				default:"Error!";
+				}
+				multiplayer(player, player2);
 			}
+			else if(choice == 3)
+				adduser();
+			else if(choice == 4)	{
+				clear();
+				player.show();
+			}
+			else if(choice == 0);
+			else
+				cout<<"\nError!"
 			cout<<"\n" << player.retname()<<", logout? (Y/N) ";
 			cin >> cont;
 		  } while (cont == 'n' || cont == 'N');
@@ -277,30 +277,31 @@ void admin_mode()
 		cout << "\n1.Display movie list\n2.Add a movie\n3.Delete a movie\n0.Logout";
 		cout << "\nEnter choice: ";
 		cin >> choice;
-		switch (choice)
-		{
-		case 0:	break;
-		case 1:	clear();
-			char movie[80];
+		if(choice == 0);
+		else if (choice == 1)	{
+			clear();
+			char* movie;
 			ifstream fin("movies.txt");
 			for (int i = 0; !fin.eof(); i++)
 			{
-				fin.getline(movie, 80);
+				fin.getline(cin, movie);
 				if (fin.eof())
 					break;
 				cout << i + 1 << ". " << movie << endl;
 			}
-			break;
-		case 2:	clear();
-			char line[80];
+		}
+		else if(choice == 2)	{
+			clear();
+			char* line;
 			ofstream fout("movies.txt", ios::app);
 			cout << "\nEnter the name of the new movie: ";
 			getline(cin, line);
 			fout << line << endl;
 			cout << "\nMovie added!";
-			break;
-		case 3:	clear();
-			char del[80], name[80];
+		}
+		else if(choice == 3)	{
+			clear();
+			char* del, name;
 			ifstream f1("movies.txt");
 			ofstream f2("temp.txt");
 			cout << "\nEnter name of the movie to be deleted: ";
@@ -317,9 +318,9 @@ void admin_mode()
 			f2.close();
 			remove("movies.txt");
 			rename("temp.txt", "movies.txt");
-			break;
-		default:cout << "\nError!!!";
 		}
+		else
+			cout<<"\nError!";
 		cout << "\nDo you want to logout? (Y/N) ";
 		cin >> cont;
 	} while (cont == 'n' || cont == 'N');
