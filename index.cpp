@@ -1,7 +1,3 @@
-/*
-	List of all header files used
-	Lot of them are not user, just for redundancies sake
-*/
 #include<iostream>
 #include<fstream>
 #include<string>
@@ -10,18 +6,11 @@
 #include<stdlib.h>
 #include<ctype.h>
 #include<math.h>
-/*
-	Namespace std is added to save a lot of typing,
-	instead of typing all the time std::cout or std::cin
-*/
+#include<ctime>
 using namespace std;
 
 void clrscr()
 {
-	/*
-		Custom clrscr() function, works as expected. 
-		No qualms at all, don't even touch it
-	*/
 	system("clear");
     for(int i=0;i<79;i++)
         cout<<"=";
@@ -30,13 +19,6 @@ void clrscr()
         cout<<"=";
     
 }
-
-/*
-	User class
-	helps in manipulation and usage of user data
-	the problem which i beleive we shall face, is that
-	modification of string data type is difficult
-*/
 class user
 {
 	string username, password;
@@ -91,13 +73,6 @@ public:
 		}
 	}
 };
-
-/*
-	Fuction which returns that
-	the user is logged in or not. 
-	Also, returns flag for the same. 
-	
-*/
 int login(user &attempt)
 {
 	user obj;
@@ -253,6 +228,99 @@ int vowel_check(char a)
 		return 1;
 	else
 		return 0;
+}
+void singleplayer(user &obj)
+{
+	clrscr();
+	srand(time(0));
+	ifstream fin("movies.txt");
+	int i=0;
+	char movie[80], encoded_movie[80];
+	while(!fin.eof())
+	{
+		fin.getline(movie, 80);
+		if(fin.eof());
+			break;
+		i++;
+	}
+	fin.close();
+	int temp=i;
+	i=(rand() % temp) + 1;
+	ifstream fi("movies.txt");
+	for(temp=0;temp<=i; temp++)
+		fi.getline(movie,80);
+	fi.close();
+	int c=0;
+	for(int j=0;j<strlen(movie);j++)
+	{
+		if(vowel_check(movie[j])||!isalpha(movie[j]))
+			encoded_movie[c++] = movie[j];
+		else
+			encoded_movie[c++] = '_';
+	}
+	encoded_movie[c]='\0';
+	int life_left =7;
+	int win = 0;
+	int flag_win_check = 1;
+	char user_guess;
+	int flag_life = 0;
+	do
+	{
+		clrscr();
+		flag_win_check=1;
+		flag_life=0;
+		cout<<"\nLives left:--"<<life_left;
+		cout<<"\n\nMovie:";
+		puts(encoded_movie);
+		cout<<obj.retname()<<" guess a charecter:";
+		cin>>user_guess;
+		for(int k=0; movie[k]!='\0';k++)
+		{
+			if(user_guess == tolower(movie[k]))
+			{
+				encoded_movie[k]=movie[k];
+				flag_life =1;
+			}
+		}
+		if(flag_life == 0)
+		{
+			life_left-=1;
+		}
+		clrscr();
+		for(int l=0;encoded_movie[l]!='\0';l++)
+		{
+			if(encoded_movie[l] =='_')
+				flag_win_check=0;
+		}
+		if(flag_win_check==1)
+			win=1;
+		if(win ==1)
+		{
+			cout<<"\nYou've won!!!";
+			obj.winmore();
+			break;
+		}
+	} while (life_left>0);
+	if(life_left==0)
+	{
+		cout<<"You've lost!!!";
+		obj.lossmore();
+	}
+	ifstream f1("users.dat", ios::binary);
+	ifstream f2("temp.dat", ios::binary);
+	user dummy;
+	while(!f1.eof())
+	{
+		f1.read((char*)&dummy, sizeof(dummy));
+		if(obj.retname() == dummy.retname())
+			f2.write((char*)&obj, sizeof(obj));
+		else
+			f2.write((char*)&dummy, sizeof(dummy));
+	}
+	f1.close();
+	f2.close();
+	remove("USERS.DAT");
+	rename("TEMP.DAT", "USERS.DAT");
 }
 int main()
 {
