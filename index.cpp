@@ -239,7 +239,7 @@ void singleplayer(user &obj)
 	while(!fin.eof())
 	{
 		fin.getline(movie, 80);
-		if(fin.eof());
+		if(fin.eof())
 			break;
 		i++;
 	}
@@ -307,7 +307,7 @@ void singleplayer(user &obj)
 		obj.lossmore();
 	}
 	ifstream f1("users.dat", ios::binary);
-	ifstream f2("temp.dat", ios::binary);
+	fstream f2("temp.dat", ios::binary);
 	user dummy;
 	while(!f1.eof())
 	{
@@ -369,4 +369,4 @@ int main()
 		cin>>cont;	
 	} while (cont == 'y'|| cont == 'Y');
 	
-}	
+}
