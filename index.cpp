@@ -1,12 +1,10 @@
+#include<iostream>
 #include<fstream>
 #include<string>
 #include<cstring>
-#include<iostream>
-#include<ctype.h>
-#include<stdio.h>
-#include<stdlib.h>
-
-using namespace std;
+#include<cctype>
+#include<cstdio>
+#include<cstdlib>
 
 void clear()
 {
@@ -15,10 +13,10 @@ void clear()
 	*/
 	system("cls");
 	for (int i = 0; i < 80; i++)
-		cout << "=";
-	cout << "\t\t\t\tHANGMAN v3.14\n";
+		std::cout << "=";
+	std::cout << "\t\t\t\tHANGMAN v3.14\n";
 	for (int j = 0; j < 80; j++)
-		cout << "=";
+		std::cout << "=";
 }
 class USER
 {
@@ -50,29 +48,30 @@ class USER
 	void take();
 	void show()
 	{
-		cout << "\nUsername: " << username;
-		cout << "\nWins: " << win;
-		cout << "\nLosses: " << loss;
+		std::cout << "\nUsername: " << username;
+		std::cout << "\nWins: " << win;
+		std::cout << "\nLosses: " << loss;
 		if (loss != 0)
-			cout << "\nW/L ratio: " << win / loss;
+			std::cout << "\nW/L ratio: " << win / loss;
 	}
 };
 
 void USER::take()
 {
-	cout << "\nEnter username: ";	getline(cin, username);
-	cout << "Enter password: ";
+	std::cout << "\nEnter username: ";	
+	getline(std::cin, username);
+	std::cout << "Enter password: ";
 	char ch;	int i = 0;
 	while (1)
 	{
-		ch = cin.get();
+		ch = std::cin.get();
 		if (ch == '\r')
 		{
 			password[i] = '\0';
 			break;
 		}
 		password[i++] = ch;
-		cout << "*";
+		std::cout << "*";
 	}
 }
 
@@ -90,18 +89,18 @@ int main()
 	char cont;	int choice; 	USER obj;
 	do {
 		clear();
-		/*cout<<"\n\t\t\tWelcome to HANGMAN v1.0!\n";
-		cout<<"------------------------------------------------------------------------------";*/
-		cout << "\nMenu:\n1.Login\n2.Sign up\n3.Play game\n0.Exit";
-		cout << "\nEnter your choice: ";
-		cin >> choice;
+		/*std::cout<<"\n\t\t\tWelcome to HANGMAN v1.0!\n";
+		std::cout<<"------------------------------------------------------------------------------";*/
+		std::cout << "\nMenu:\n1.Login\n2.Sign up\n3.Play game\n0.Exit";
+		std::cout << "\nEnter your choice: ";
+		std::cin >> choice;
 		switch (choice)
 		{
 		case 0:
 			exit(0);
 			break;
 		case 1:	clear();
-			cout << "Enter your credentials";
+			std::cout << "Enter your credentials";
 			obj.take();
 			if (strcmp(obj.retname(), "admin") == 0)
 			{
@@ -119,13 +118,13 @@ int main()
 			break;
 		case 3:	clear();
 			int choice2;
-			cout << "\n1.Play as a user\n2.Play as guest\n0.Return to main menu";
-			cout << "\nEnter your choice: ";
-			cin >> choice2;
+			std::cout << "\n1.Play as a user\n2.Play as guest\n0.Return to main menu";
+			std::cout << "\nEnter your choice: ";
+			std::cin >> choice2;
 			switch (choice2)
 			{
 			case 0:	break;
-			case 1: cout << "\nEnter your credentials";
+			case 1: std::cout << "\nEnter your credentials";
 				obj.take();
 				if (strcmp(obj.retname(), "admin") == 0)
 				{
@@ -138,7 +137,7 @@ int main()
 				else
 					normie(obj);
 				break;
-			case 2:	cout << "\nEnter your username as 'guest', and password as 'nobody'";
+			case 2:	std::cout << "\nEnter your username as 'guest', and password as 'nobody'";
 				obj.take();
 				if (strcmp(obj.retname(), "guest") == 0)
 				{
@@ -148,15 +147,15 @@ int main()
 						break;
 					}
 				}
-				cout << "\nYou have entered the username or password incorrectly!";
+				std::cout << "\nYou have entered the username or password incorrectly!";
 				break;
-			default:cout << "\nError!";
+			default:std::cout << "\nError!";
 			}
 			break;
-		default:cout << "\nWrong input!";
+		default:std::cout << "\nWrong input!";
 		}
-		cout << "\nDo you want to display the main menu again? (Y/N) ";
-		cin >> cont;
+		std::cout << "\nDo you want to display the main menu again? (Y/N) ";
+		std::cin >> cont;
 	} while (cont == 'y' || cont == 'Y');
 	return 0;
 }
@@ -164,30 +163,30 @@ int main()
 void adduser()
 {
 	USER player, obj;
-	cout << "\nSign up";
+	std::cout << "\nSign up";
 	player.take();
-	ifstream fin("USERS.DAT", ios::binary);
+	std::ifstream fin("USERS.DAT", ios::binary);
 	while(!fin.eof())
 	{
 		fin.read((char*)&obj, sizeof(obj));
 		if(strcmp(obj.retname(), player.retname()) == 0)
 		{
-			cout<<"\nUser already exists!";
+			std::cout<<"\nUser already exists!";
 			fin.close();
 			return;
 		}
 	}
 	fin.close();
-	ofstream fout("USERS.DAT", ios::binary | ios::app);
+	std::ofstream fout("USERS.DAT", ios::binary | ios::app);
 	fout.write((char*)& player, sizeof(player));
-	cout << "\nSign up successful!";
+	std::cout << "\nSign up successful!";
 	fout.close();
 }
 
 int login(USER & attempt)
 {
 	USER obj;
-	ifstream fin("USERS.DAT", ios::binary);
+	std::ifstream fin("USERS.DAT", ios::binary);
 	while (!fin.eof())
 	{
 		fin.read((char*)& obj, sizeof(obj));
@@ -201,12 +200,12 @@ int login(USER & attempt)
 			}
 			else
 			{
-				cout << "\nIncorrect password!";
+				std::cout << "\nIncorrect password!";
 				return 0;
 			}
 		}
 	}
-	cout << "\nIncorrect username!";
+	std::cout << "\nIncorrect username!";
 	fin.close();
 	return 0;
 }
@@ -220,23 +219,23 @@ void normie(USER & player)
 		int choice;	char cont;
 		do {
 			clear();
-			cout << "\nWelcome " << player.retname() << "!";
-			cout << "\nSelect your action:";
-			cout << "\n1.Play singleplayer\n2.Play multiplayer\n3.Add another user\n4.Display scoreboard\n0.Logout";
-			cout << "\nEnter your choice: ";
-			cin >> choice;
+			std::cout << "\nWelcome " << player.retname() << "!";
+			std::cout << "\nSelect your action:";
+			std::cout << "\n1.Play singleplayer\n2.Play multiplayer\n3.Add another user\n4.Display scoreboard\n0.Logout";
+			std::cout << "\nEnter your choice: ";
+			std::cin >> choice;
 			if(choice == 1)
 				singleplayer(player);
 			else if(choice == 2)	{
 				clear();
 				USER player2;
-				cout<<"\nAnother user is needed to play in multiplayer mode!";
-				cout<<"\nPlayer 2, enter your credentials below: (if you want to log in as guest, enter username as 'guest' and password as 'nobody')";
+				std::cout<<"\nAnother user is needed to play in multiplayer mode!";
+				std::cout<<"\nPlayer 2, enter your credentials below: (if you want to log in as guest, enter username as 'guest' and password as 'nobody')";
 				player2.take();
 				int flag = login(player2);
 				if(flag == 0)
 				{
-					cout<<"\nLogin failed!";
+					std::cout<<"\nLogin failed!";
 					break;
 				}
 				multiplayer(player, player2);
@@ -249,9 +248,9 @@ void normie(USER & player)
 			}
 			else if(choice == 0);
 			else
-				cout<<"\nError!"
-			cout<<"\n" << player.retname()<<", logout? (Y/N) ";
-			cin >> cont;
+				std::cout<<"\nError!"
+			std::cout<<"\n" << player.retname()<<", logout? (Y/N) ";
+			std::cin >> cont;
 		  } while (cont == 'n' || cont == 'N');
 	}
 }
@@ -273,46 +272,46 @@ void admin_mode()
 	char cont;	int choice;
 	do {
 		clear();
-		cout << "\nWelcome administrator!";
-		cout << "\n1.Display movie list\n2.Add a movie\n3.Delete a movie\n0.Logout";
-		cout << "\nEnter choice: ";
-		cin >> choice;
+		std::cout << "\nWelcome administrator!";
+		std::cout << "\n1.Display movie list\n2.Add a movie\n3.Delete a movie\n0.Logout";
+		std::cout << "\nEnter choice: ";
+		std::cin >> choice;
 		if(choice == 0);
 		else if (choice == 1)	{
 			clear();
 			char* movie;
-			ifstream fin("movies.txt");
+			std::ifstream fin("movies.txt");
 			for (int i = 0; !fin.eof(); i++)
 			{
-				fin.getline(cin, movie);
+				fin.getline(std::cin, movie);
 				if (fin.eof())
 					break;
-				cout << i + 1 << ". " << movie << endl;
+				std::cout << i + 1 << ". " << movie << std::endl;
 			}
 		}
 		else if(choice == 2)	{
 			clear();
 			char* line;
-			ofstream fout("movies.txt", ios::app);
-			cout << "\nEnter the name of the new movie: ";
-			getline(cin, line);
-			fout << line << endl;
-			cout << "\nMovie added!";
+			std::ofstream fout("movies.txt", std::ios::app);
+			std::cout << "\nEnter the name of the new movie: ";
+			getline(std::cin, line);
+			fout << line << std::endl;
+			std::cout << "\nMovie added!";
 		}
 		else if(choice == 3)	{
 			clear();
 			char* del, name;
-			ifstream f1("movies.txt");
-			ofstream f2("temp.txt");
-			cout << "\nEnter name of the movie to be deleted: ";
-			getline(cin, del);
+			std::ifstream f1("movies.txt");
+			std::ofstream f2("temp.txt");
+			std::cout << "\nEnter name of the movie to be deleted: ";
+			getline(std::cin, del);
 			while (!f1.eof())
 			{
 				f1.getline(name, 80);
 				if (f1.eof())
 					break;
-				if (strcmpi(name, del) != 0)
-					f2 << name << endl;
+				if (strcmp(name, del) != 0)
+					f2 << name << std::endl;
 			}
 			f1.close();
 			f2.close();
@@ -320,9 +319,9 @@ void admin_mode()
 			rename("temp.txt", "movies.txt");
 		}
 		else
-			cout<<"\nError!";
-		cout << "\nDo you want to logout? (Y/N) ";
-		cin >> cont;
+			std::cout<<"\nError!";
+		std::cout << "\nDo you want to logout? (Y/N) ";
+		std::cin >> cont;
 	} while (cont == 'n' || cont == 'N');
 }
 
@@ -330,7 +329,7 @@ void singleplayer(USER & obj)
 {
 	clear();
 	randomize();
-	ifstream fin("movies.txt");
+	std::ifstream fin("movies.txt");
 	int i = 0;	char movie[80], encoded_movie[80];
 	while (!fin.eof())
 	{
@@ -342,7 +341,7 @@ void singleplayer(USER & obj)
 	fin.close();
 	int temp = i;
 	i = random(temp);
-	ifstream fi("movies.txt");
+	std::ifstream fi("movies.txt");
 	for (temp = 0; temp <= i; temp++)
 		fi.getline(movie, 80);
 	fi.close();
@@ -363,10 +362,10 @@ void singleplayer(USER & obj)
 	do {
 		flag_win_check = 1;
 		flag_life = 0;
-		cout << "\nLIVES LEFT = " << life_left;
-		cout << "\n\nMovie: ";	puts(encoded_movie);
-		cout << obj.retname() << ", guess a character: ";
-		cin >> user_guess;
+		std::cout << "\nLIVES LEFT = " << life_left;
+		std::cout << "\n\nMovie: ";	puts(encoded_movie);
+		std::cout << obj.retname() << ", guess a character: ";
+		std::cin >> user_guess;
 		for (int k = 0; movie[k] != '\0'; k++)
 		{
 			if (user_guess == tolower(movie[k]))
@@ -388,14 +387,14 @@ void singleplayer(USER & obj)
 			win = 1;
 		if (win == 1)
 		{
-			cout << "You've won!!!";
+			std::cout << "You've won!!!";
 			obj.winmore();
 			break;
 		}
 	} while (life_left > 0);
 	if (life_left == 0)
 	{
-		cout << "You've lost!!!";
+		std::cout << "You've lost!!!";
 		obj.lossmore();
 	}
 	update(obj);
@@ -403,8 +402,8 @@ void singleplayer(USER & obj)
 
 void update(USER &obj)
 {
-	ifstream f1("USERS.DAT", ios::binary);
-	ofstream f2("TEMP.DAT", ios::binary);
+	std::ifstream f1("USERS.DAT", ios::binary);
+	std::ofstream f2("TEMP.DAT", ios::binary);
 	USER dummy;
 	while (!f1.eof())
 	{
@@ -422,8 +421,8 @@ void update(USER &obj)
 
 void update(USER &obj, USER &obj2)
 {
-	ifstream f1("USERS.DAT", ios::binary);
-	ofstream f2("TEMP.DAT", ios::binary);
+	std::ifstream f1("USERS.DAT", ios::binary);
+	std::ofstream f2("TEMP.DAT", ios::binary);
 	USER dummy;
 	while (!f1.eof())
 	{
@@ -437,8 +436,8 @@ void update(USER &obj, USER &obj2)
 	f2.close();
 	remove("USERS.DAT");
 	rename("TEMP.DAT", "USERS.DAT");
-	ifstream f3("USERS.DAT", ios::binary);
-	ofstream f4("TEMP.DAT", ios::binary);
+	std::ifstream f3("USERS.DAT", ios::binary);
+	std::ofstream f4("TEMP.DAT", ios::binary);
 	while (!f3.eof())
 	{
 		f3.read((char*)& dummy, sizeof(dummy));
@@ -462,9 +461,9 @@ void multiplayer(USER &player1, USER &player2)
 	int flag_life = 0;
 	char movie[80], encoded_movie[80];
 	int c = 0;
-	cout << player1.retname();
-	cout << "\nEnter the movie: (Hide the screen from "<<player2.retname()<<"!) ";
-	getline(cin, movie);
+	std::cout << player1.retname();
+	std::cout << "\nEnter the movie: (Hide the screen from "<<player2.retname()<<"!) ";
+	getline(std::cin, movie);
 	for (int j = 0; j < strlen(movie); j++)
 	{
 		if (vowel_check(movie[j]) || !isalpha(movie[j]))
@@ -478,11 +477,11 @@ void multiplayer(USER &player1, USER &player2)
 		clear();
 		flag_win_check = 1;
 		flag_life = 0;
-		cout << "\nLIVES LEFT = " << life_left;
-		cout << "\n\nMovie: ";
+		std::cout << "\nLIVES LEFT = " << life_left;
+		std::cout << "\n\nMovie: ";
 		puts(encoded_movie);
-		cout << player2.retname()<<", guess a character: ";
-		cin >> user_guess;
+		std::cout << player2.retname()<<", guess a character: ";
+		std::cin >> user_guess;
 		for (int k = 0; movie[k] != '\0'; k++)
 		{
 			if (user_guess == tolower(movie[k]))
@@ -504,21 +503,21 @@ void multiplayer(USER &player1, USER &player2)
 			win = 1;
 		if (win == 1)
 		{
-			cout << player2.retname()<<" wins round 1!!!";
+			std::cout << player2.retname()<<" wins round 1!!!";
 			player2.winmore();	player1.lossmore();
 			break;
 		}
 	} while (life_left > 0);
 	if (life_left == 0)
 	{
-		cout << player1.retname()<<" wins round 1!!!";
+		std::cout << player1.retname()<<" wins round 1!!!";
 		player2.lossmore();	player1.winmore();
 	}
-	cout<<"\nRound 2!";
+	std::cout<<"\nRound 2!";
 	c = 0;
-	cout << endl << player2.retname();
-	cout << ", enter the movie: (Hide the screen from "<<player1.retname()<<"!) ";
-	getline(cin, movie);
+	std::cout << std::endl << player2.retname();
+	std::cout << ", enter the movie: (Hide the screen from "<<player1.retname()<<"!) ";
+	getline(std::cin, movie);
 	for (int k = 0; k < strlen(movie); k++)
 	{
 		if (vowel_check(movie[k]) || !isalpha(movie[k]))
@@ -532,11 +531,11 @@ void multiplayer(USER &player1, USER &player2)
 		clear();
 		flag_win_check = 1;
 		flag_life = 0;
-		cout << "\nLIVES LEFT = " << life_left;
-		cout << "\n\nMovie: ";
+		std::cout << "\nLIVES LEFT = " << life_left;
+		std::cout << "\n\nMovie: ";
 		puts(encoded_movie);
-		cout << player1.retname()<<", guess a character: ";
-		cin >> user_guess;
+		std::cout << player1.retname()<<", guess a character: ";
+		std::cin >> user_guess;
 		for (int k = 0; movie[k] != '\0'; k++)
 		{
 			if (user_guess == tolower(movie[k]))
@@ -558,14 +557,14 @@ void multiplayer(USER &player1, USER &player2)
 			win = 1;
 		if (win == 1)
 		{
-			cout << player1.retname()<<" wins round 2!!!";
+			std::cout << player1.retname()<<" wins round 2!!!";
 			player1.winmore();	player2.lossmore();
 			break;
 		}
 	} while (life_left > 0);
 	if (life_left == 0)
 	{
-		cout << player2.retname()<<" wins round 2!!!";
+		std::cout << player2.retname()<<" wins round 2!!!";
 		player1.lossmore();	player2.winmore();
 	}
 	update(player1, player2);
