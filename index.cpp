@@ -1,10 +1,14 @@
-#include<iostream>
-#include<fstream>
-#include<string>
-#include<cstring>
-#include<cctype>
-#include<cstdio>
-#include<cstdlib>
+// C++ headers
+#include <iostream>
+#include <fstream>
+#include <string>
+
+// C headers
+#include <cstring>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
 
 void clear()
 {
@@ -165,7 +169,7 @@ void adduser()
 	USER player, obj;
 	std::cout << "\nSign up";
 	player.take();
-	std::ifstream fin("USERS.DAT", ios::binary);
+	std::ifstream fin("USERS.DAT", std::ios::binary);
 	while(!fin.eof())
 	{
 		fin.read((char*)&obj, sizeof(obj));
@@ -177,7 +181,7 @@ void adduser()
 		}
 	}
 	fin.close();
-	std::ofstream fout("USERS.DAT", ios::binary | ios::app);
+	std::ofstream fout("USERS.DAT", std::ios::binary | std::ios::app);
 	fout.write((char*)& player, sizeof(player));
 	std::cout << "\nSign up successful!";
 	fout.close();
@@ -186,7 +190,7 @@ void adduser()
 int login(USER & attempt)
 {
 	USER obj;
-	std::ifstream fin("USERS.DAT", ios::binary);
+	std::ifstream fin("USERS.DAT", std::ios::binary);
 	while (!fin.eof())
 	{
 		fin.read((char*)& obj, sizeof(obj));
@@ -248,7 +252,7 @@ void normie(USER & player)
 			}
 			else if(choice == 0);
 			else
-				std::cout<<"\nError!"
+				std::cout<<"\nError!";
 			std::cout<<"\n" << player.retname()<<", logout? (Y/N) ";
 			std::cin >> cont;
 		  } while (cont == 'n' || cont == 'N');
@@ -328,7 +332,9 @@ void admin_mode()
 void singleplayer(USER & obj)
 {
 	clear();
-	randomize();
+	//randomize();
+	// add srand() to generate a random seen everytime instead
+
 	std::ifstream fin("movies.txt");
 	int i = 0;	char movie[80], encoded_movie[80];
 	while (!fin.eof())
@@ -340,7 +346,7 @@ void singleplayer(USER & obj)
 	}
 	fin.close();
 	int temp = i;
-	i = random(temp);
+	i = (rand()%temp);
 	std::ifstream fi("movies.txt");
 	for (temp = 0; temp <= i; temp++)
 		fi.getline(movie, 80);
@@ -402,8 +408,8 @@ void singleplayer(USER & obj)
 
 void update(USER &obj)
 {
-	std::ifstream f1("USERS.DAT", ios::binary);
-	std::ofstream f2("TEMP.DAT", ios::binary);
+	std::ifstream f1("USERS.DAT", std::ios::binary);
+	std::ofstream f2("TEMP.DAT", std::ios::binary);
 	USER dummy;
 	while (!f1.eof())
 	{
@@ -421,8 +427,8 @@ void update(USER &obj)
 
 void update(USER &obj, USER &obj2)
 {
-	std::ifstream f1("USERS.DAT", ios::binary);
-	std::ofstream f2("TEMP.DAT", ios::binary);
+	std::ifstream f1("USERS.DAT", std::ios::binary);
+	std::ofstream f2("TEMP.DAT", std::ios::binary);
 	USER dummy;
 	while (!f1.eof())
 	{
@@ -436,8 +442,8 @@ void update(USER &obj, USER &obj2)
 	f2.close();
 	remove("USERS.DAT");
 	rename("TEMP.DAT", "USERS.DAT");
-	std::ifstream f3("USERS.DAT", ios::binary);
-	std::ofstream f4("TEMP.DAT", ios::binary);
+	std::ifstream f3("USERS.DAT", std::ios::binary);
+	std::ofstream f4("TEMP.DAT", std::ios::binary);
 	while (!f3.eof())
 	{
 		f3.read((char*)& dummy, sizeof(dummy));
