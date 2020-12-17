@@ -2,20 +2,30 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <stdexcept>
 
 // C headers
 #include <cstring>
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
-#include <ctime>
 
 void clear()
 {
 	/*
 		CUSTOM CLEARSCREEN FUNCTION TO DISPLAY TOP BANNER
 	*/
-	system("cls");
+
+	// Check for the platform and use the clear command accordingly
+	#if defined (_WIN32) 
+		system("cls"); 
+	#elif defined(unix)|| defined(__unix__)|| defined(__unix)
+		system("clear"); 
+	#else
+		throw std::runtime_error("Platform not supported");
+	#endif
+
+	// Genearate the welcome screen 
 	for (int i = 0; i < 80; i++)
 		std::cout << "=";
 	std::cout << "\t\t\t\tHANGMAN v3.14\n";
